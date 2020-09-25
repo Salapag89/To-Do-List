@@ -14,4 +14,6 @@ class Task {
         this.description = description
         this.priority = priority
     }
+
+    constructor(){}
 }

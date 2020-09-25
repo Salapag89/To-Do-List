@@ -10,4 +10,6 @@ class Project {
         this.name = name
         this.color = color
     }
+
+    constructor(){}
 }

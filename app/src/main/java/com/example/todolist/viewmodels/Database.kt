@@ -16,7 +16,7 @@ const val COL_DESCRIPTION = "description"
 const val COL_PRIORITY = "priority"
 
 
-class Database(var context: Context) : SQLiteOpenHelper(context,DATABASE,null,1){
+class Database(private var context: Context) : SQLiteOpenHelper(context,DATABASE,null,1){
     override  fun onCreate(db: SQLiteDatabase?){
         val createProjectTable = "CREATE TABLE" + TABLE_PROJECTS +" (" +
                 COL_ID +" INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -68,5 +68,58 @@ class Database(var context: Context) : SQLiteOpenHelper(context,DATABASE,null,1)
             Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
         else
             Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+    }
+
+    fun getProjects() : MutableList<Project>{
+        var list : MutableList<Project> = ArrayList()
+
+        val db = this.readableDatabase
+        val query = "SELECT * FROM $TABLE_PROJECTS"
+        val result = db.rawQuery(query, null)
+        if(result.moveToFirst()){
+            do{
+                var project = Project()
+                project.id = result.getString(result.getColumnIndex(COL_ID)).toInt()
+                project.name = result.getString(result.getColumnIndex(COL_NAME))
+                project.color = result.getString(result.getColumnIndex(COL_COLOR)).toInt()
+                list.add(project)
+            }while(result.moveToNext())
+        }
+
+        return list
+    }
+
+    fun deleteProject(_id:Int){
+        val db = this.writableDatabase
+        db.delete(TABLE_PROJECTS, COL_ID, arrayOf(_id.toString()))
+        db.close()
+    }
+
+    fun getTask(projectID:Int) : MutableList<Task>{
+        var list : MutableList<Task> = ArrayList()
+
+        val db = this.readableDatabase
+        val query = "SELECT * FROM $TABLE_TASKS WHERE $COL_PROJECT_ID IS $projectID"
+        val result = db.rawQuery(query, null)
+        if(result.moveToFirst()){
+            do{
+                var task = Task()
+                task.id = result.getString(result.getColumnIndex(COL_ID)).toInt()
+                task.projectID = result.getString(result.getColumnIndex(COL_PROJECT_ID)).toInt()
+                task.name = result.getString(result.getColumnIndex(COL_NAME))
+                task.description = result.getString(result.getColumnIndex(COL_DESCRIPTION))
+                task.priority = result.getString(result.getColumnIndex(COL_PRIORITY)).toInt()
+
+                list.add(task)
+            }while(result.moveToNext())
+        }
+
+        return list
+    }
+
+    fun deleteTask(_id:Int){
+        val db = this.writableDatabase
+        db.delete(TABLE_TASKS, COL_ID, arrayOf(_id.toString()))
+        db.close()
     }
 }
