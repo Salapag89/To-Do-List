@@ -20,8 +20,7 @@ class DatabaseHandler(private var context: Context) : SQLiteOpenHelper(context,
     override  fun onCreate(db: SQLiteDatabase?){
         val createProjectTable = "CREATE TABLE" + TABLE_PROJECTS +" (" +
                 COL_ID +" INTEGER PRIMARY KEY AUTOINCREMENT," +
-                COL_NAME +" VARCHAR(256)," +
-                COL_COLOR +" INTEGER)";
+                COL_NAME +" VARCHAR(256)";
 
         val createTaskTable = "CREATE TABLE" + TABLE_TASKS +" (" +
                 COL_ID +" INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -44,7 +43,6 @@ class DatabaseHandler(private var context: Context) : SQLiteOpenHelper(context,
         var cv = ContentValues()
 
         cv.put(COL_NAME, project.name)
-        cv.put(COL_COLOR, project.color)
 
         var result = db.insert(TABLE_PROJECTS, null, cv)
         if(result == (-1).toLong())
@@ -54,12 +52,12 @@ class DatabaseHandler(private var context: Context) : SQLiteOpenHelper(context,
 
     }
 
-    fun insertTaskData(task : Task){
+    fun insertTaskData(task : Task, projectID: Int){
         val db = this.writableDatabase
         var cv = ContentValues()
 
         cv.put(COL_NAME, task.name)
-        cv.put(COL_PROJECT_ID, task.projectID)
+        cv.put(COL_PROJECT_ID, projectID)
         cv.put(COL_DESCRIPTION, task.description)
         cv.put(COL_PRIORITY, task.priority)
 
@@ -81,7 +79,6 @@ class DatabaseHandler(private var context: Context) : SQLiteOpenHelper(context,
                 var project = Project()
                 project.id = result.getString(result.getColumnIndex(COL_ID)).toInt()
                 project.name = result.getString(result.getColumnIndex(COL_NAME))
-                project.color = result.getString(result.getColumnIndex(COL_COLOR)).toInt()
                 list.add(project)
             }while(result.moveToNext())
         }
@@ -107,7 +104,6 @@ class DatabaseHandler(private var context: Context) : SQLiteOpenHelper(context,
             do{
                 var task = Task()
                 task.id = result.getString(result.getColumnIndex(COL_ID)).toInt()
-                task.projectID = result.getString(result.getColumnIndex(COL_PROJECT_ID)).toInt()
                 task.name = result.getString(result.getColumnIndex(COL_NAME))
                 task.description = result.getString(result.getColumnIndex(COL_DESCRIPTION))
                 task.priority = result.getString(result.getColumnIndex(COL_PRIORITY)).toInt()

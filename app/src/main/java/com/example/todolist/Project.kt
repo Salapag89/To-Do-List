@@ -4,11 +4,9 @@ class Project {
 
     var id: Int = 0
     var name : String = ""
-    var color : Int = 0
 
-    constructor(name:String,color:Int){
+    constructor(name:String){
         this.name = name
-        this.color = color
     }
 
     constructor(){}
