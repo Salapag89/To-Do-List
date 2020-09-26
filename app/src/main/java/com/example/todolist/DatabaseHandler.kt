@@ -1,9 +1,8 @@
-package com.example.todolist.viewmodels
+package com.example.todolist
 
 import android.content.*
 import android.database.sqlite.*
 import android.widget.Toast
-import com.example.todolist.model.*
 
 const val DATABASE = "MyDB"
 const val TABLE_PROJECTS = "Projects"
@@ -16,7 +15,8 @@ const val COL_DESCRIPTION = "description"
 const val COL_PRIORITY = "priority"
 
 
-class Database(private var context: Context) : SQLiteOpenHelper(context,DATABASE,null,1){
+class DatabaseHandler(private var context: Context) : SQLiteOpenHelper(context,
+    DATABASE,null,1){
     override  fun onCreate(db: SQLiteDatabase?){
         val createProjectTable = "CREATE TABLE" + TABLE_PROJECTS +" (" +
                 COL_ID +" INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -91,7 +91,9 @@ class Database(private var context: Context) : SQLiteOpenHelper(context,DATABASE
 
     fun deleteProject(_id:Int){
         val db = this.writableDatabase
-        db.delete(TABLE_PROJECTS, COL_ID, arrayOf(_id.toString()))
+        db.delete(
+            TABLE_PROJECTS,
+            COL_ID, arrayOf(_id.toString()))
         db.close()
     }
 
@@ -119,7 +121,9 @@ class Database(private var context: Context) : SQLiteOpenHelper(context,DATABASE
 
     fun deleteTask(_id:Int){
         val db = this.writableDatabase
-        db.delete(TABLE_TASKS, COL_ID, arrayOf(_id.toString()))
+        db.delete(
+            TABLE_TASKS,
+            COL_ID, arrayOf(_id.toString()))
         db.close()
     }
 }
